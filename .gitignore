@@ -1,0 +1,19 @@
+# Dépendances Composer
+/vendor/
+
+# Configuration sensible
+.env
+.env.*
+!.env.example
+
+# Fichiers temporaires et logs
+*.log
+*.tmp
+
+# Fichiers des éditeurs
+.idea/
+.vscode/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
