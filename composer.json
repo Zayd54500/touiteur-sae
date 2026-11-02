@@ -1,0 +1,17 @@
+{
+    "name": "zayd54500/touiteur-sae",
+    "description": "Application web dans le même style que twitter développé en PHP pour la SAE de Dev Web BUT 2 Info",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Zayd54500\\TouiteurSae\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Zayd Benzakour",
+            "email": "266005098+Zayd54500@users.noreply.github.com"
+        }
+    ],
+    "require": {}
+}
