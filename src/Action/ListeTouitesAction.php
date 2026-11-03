@@ -5,16 +5,19 @@ class ListeTouitesAction {
     public function execute(): string { 
         $touites = [ 
             [
+                "id" => 3,
                 "pseudo" => "Zayd",
                 "contenu" => "Je suis le meilleur touitos de ce réseau", 
                 "date_publication" => "01/11/2026"
             ],
             [
+                "id" => 1,
                 "pseudo" => "Vincent",
                 "contenu" => "On test ce réseau de merde pour voir ^^",
                 "date_publication" => "03/11/2026"
             ], 
-            [ 
+            [
+                "id" => 2,
                 "pseudo" => "Aminou",
                 "contenu" => "Je pense que vincent est une merde",
                 "date_publication" => "02/11/2026"
@@ -37,7 +40,7 @@ class ListeTouitesAction {
         $html = "<h2>Fil d'actualité</h2>";
         foreach ($touites as $touite) { 
             $html .= "<p>" . htmlspecialchars($touite["pseudo"], ENT_QUOTES, "UTF-8")  . 
-            " : " . htmlspecialchars($touite["contenu"], ENT_QUOTES, "UTF-8") . "<br>" .
+            " : " . "<a href='?action=detail&id=". $touite["id"] ."'>" .  htmlspecialchars($touite["contenu"], ENT_QUOTES, "UTF-8") . "</a><br>" .
             "publié le : " . htmlspecialchars($touite["date_publication"], ENT_QUOTES, "UTF-8") . "</p>";
         }
         return $html;
