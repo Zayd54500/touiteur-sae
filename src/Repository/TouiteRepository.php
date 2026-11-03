@@ -21,6 +21,12 @@ class TouiteRepository {
                 "pseudo" => "Aminou",
                 "contenu" => "Je pense que vincent est une merde",
                 "date_publication" => "02/11/2026"
+            ], 
+            [
+                "id" => 4,
+                "pseudo" => "Vincent",
+                "contenu" => "Mon deuxième touite sur ce réseaux d'enculé",
+                "date_publication" => "03/11/2026"     
             ]
         ];
         return $touites;
@@ -34,6 +40,17 @@ class TouiteRepository {
             }
         }
         return null;
+    }
+
+    public function getByAuteur(string $pseudo): array {
+        $touites = $this->getAll();
+        $resultats = [];
+        foreach($touites as $touite) { 
+            if ($touite["pseudo"] === $pseudo) { 
+                $resultats[] = $touite;
+            }
+        }
+        return $resultats;
     }
 }
 ?>
