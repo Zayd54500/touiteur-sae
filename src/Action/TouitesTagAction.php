@@ -23,7 +23,7 @@ class TouitesTagAction {
             return "Aucun touite trouvé pour ce tag";
         }
 
-                usort($touites, function ($a, $b) {
+        usort($touites, function ($a, $b) {
             $dateA = \DateTime::createFromFormat("d/m/Y", $a["date_publication"]);
             $dateB = \DateTime::createFromFormat("d/m/Y", $b["date_publication"]);
 
