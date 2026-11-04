@@ -7,25 +7,25 @@ class TouiteRepository {
         [
             "id" => 3,
             "pseudo" => "Zayd",
-            "contenu" => "Je suis le meilleur touitos de ce réseau",
+            "contenu" => "Je suis le meilleur touitos de ce réseau #Prouveur",
             "date_publication" => "01/11/2026"
         ],
         [
             "id" => 1,
             "pseudo" => "Vincent",
-            "contenu" => "On test ce réseau de merde pour voir ^^",
+            "contenu" => "On test ce réseau de merde pour voir ^^ #Hater",
             "date_publication" => "03/11/2026"
         ],
         [
             "id" => 2,
             "pseudo" => "Aminou",
-            "contenu" => "Je pense que vincent est une merde",
+            "contenu" => "Je pense que vincent est une merde #Hater",
             "date_publication" => "02/11/2026"
         ],
         [
             "id" => 4,
             "pseudo" => "Vincent",
-            "contenu" => "Mon deuxième touite sur ce réseaux d'enculé",
+            "contenu" => "Mon deuxième touite sur ce réseaux d'enculé #Heureux",
             "date_publication" => "03/11/2026"
         ]
     ];
@@ -76,6 +76,18 @@ class TouiteRepository {
             }
         }
 
+        return $resultats;
+    }
+
+    public function getByTag(string $tag): array { 
+        $resultats = [];
+        $touites = $this->getAll();
+
+        foreach ($touites as $touite) { 
+            if (preg_match('/#' . preg_quote($tag, '/') . '\b/i' , $touite["contenu"]) === 1) { 
+                $resultats[] = $touite;
+            }
+        }
         return $resultats;
     }
 }

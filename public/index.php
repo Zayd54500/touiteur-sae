@@ -6,6 +6,7 @@ use Zayd54500\TouiteurSae\Action\ListeTouitesAction;
 use Zayd54500\TouiteurSae\Action\DetailTouiteAction;
 use Zayd54500\TouiteurSae\Action\PublicationTouiteAction;
 use Zayd54500\TouiteurSae\Action\TouitesAuteurAction;
+use Zayd54500\TouiteurSae\Action\TouitesTagAction;
 use Zayd54500\TouiteurSae\Repository\TouiteRepository;
 
 $action = $_GET["action"] ?? "liste";
@@ -16,6 +17,8 @@ if ($action === "liste") {
     $actionObjet = new DetailTouiteAction();
 } else if ($action === "auteur") { 
     $actionObjet = new TouitesAuteurAction();
+} else if ($action === "tag") { 
+    $actionObjet = new TouitesTagAction();
 } else if ($action === "publication") {
     $repository = new TouiteRepository();
     $actionObjet = new PublicationTouiteAction($repository);
