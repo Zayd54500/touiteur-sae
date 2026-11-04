@@ -15,8 +15,7 @@ class Utilisateur {
         $this->nbAbos=0;
         $this->nbSuivis=0;
     }
-    public function __get($propriete)
-    {
+    public function __get($propriete) {
         if (property_exists($this, $propriete)) {
             return $this->$propriete;
         }
@@ -27,7 +26,10 @@ class Utilisateur {
         $this->nbSuivis++;
         $user->etreSuivi($this);
     }
-    public function etreSuivi($user){
+    public function etreSuivi(Utilisateur $user){
         $this->listeComptesAbonnes[$user->__get('pseudo')] = true;
     }
+    public function suivreTag(Hashtag $tag){
+        $this->listeHashtagsSuivis[$tag->__get('nom')] = true;
+        $tag->etreSuivi();    }
 }
