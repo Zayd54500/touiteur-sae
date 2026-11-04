@@ -17,3 +17,4 @@
 # Fichiers système
 .DS_Store
 Thumbs.db
+/config/database.ini
