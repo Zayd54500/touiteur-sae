@@ -3,15 +3,23 @@
 namespace Zayd54500\TouiteurSae\Action;
 
 use InvalidArgumentException;
+use Zayd54500\TouiteurSae\Repository\HashtagRepository;
 use Zayd54500\TouiteurSae\Repository\TouiteRepository;
+use Zayd54500\TouiteurSae\Service\HashtagExtractor;
 
 class PublicationTouiteAction
 {
     private TouiteRepository $touiteRepository;
+    private HashtagExtractor $hashtagExtractor;
+    private HashtagRepository $hashtagRepository;
 
-    public function __construct(TouiteRepository $touiteRepository)
-    {
+    public function __construct(TouiteRepository $touiteRepository,
+                                HashtagExtractor $hashtagExtractor,
+                                HashtagRepository $hashtagRepository
+    ) {
         $this->touiteRepository = $touiteRepository;
+        $this->hashtagExtractor = $hashtagExtractor;
+        $this->hashtagRepository = $hashtagRepository;
     }
 
     public function publier(string $contenu, int $utilisateurId): int
@@ -36,10 +44,19 @@ class PublicationTouiteAction
             );
         }
 
-        return $this->touiteRepository->enregistrer(
+        $touiteId = $this->touiteRepository->enregistrer(
             $contenu,
             $utilisateurId
         );
+
+        $hashtags = $this->hashtagExtractor->extraire($contenu);
+
+        foreach ($hashtags as $hashtag) {
+            $hashtagId = $this->hashtagRepository->enregistrer($hashtag);
+            $this->hashtagRepository->associer($touiteId, $hashtagId);
+        }
+
+        return $touiteId;
     }
     public function execute(): string
     {

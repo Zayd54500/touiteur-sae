@@ -7,7 +7,9 @@ use Zayd54500\TouiteurSae\Action\DetailTouiteAction;
 use Zayd54500\TouiteurSae\Action\PublicationTouiteAction;
 use Zayd54500\TouiteurSae\Action\TouitesAuteurAction;
 use Zayd54500\TouiteurSae\Action\TouitesTagAction;
+use Zayd54500\TouiteurSae\Repository\HashtagRepository;
 use Zayd54500\TouiteurSae\Repository\TouiteRepository;
+use Zayd54500\TouiteurSae\Service\HashtagExtractor;
 
 $action = $_GET["action"] ?? "liste";
 
@@ -21,7 +23,9 @@ if ($action === "liste") {
     $actionObjet = new TouitesTagAction();
 } else if ($action === "publication") {
     $repository = new TouiteRepository();
-    $actionObjet = new PublicationTouiteAction($repository);
+    $hashtagExtractor = new HashtagExtractor();
+    $hashtagRepository = new HashtagRepository();
+    $actionObjet = new PublicationTouiteAction($repository, $hashtagExtractor, $hashtagRepository);
 } else { 
     echo "Action inconnue...";
 }
