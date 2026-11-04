@@ -29,6 +29,5 @@ class Utilisateur {
     }
     public function etreSuivi($user){
         $this->listeComptesAbonnes[$user->__get('pseudo')] = true;
-        $this->nbAbos++;
     }
 }
