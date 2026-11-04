@@ -23,10 +23,17 @@ class ListeTouitesAction {
         
         $html = "<h2>Fil d'actualité</h2>";
         foreach ($touites as $touite) { 
+            preg_match_all('/#[a-zA-Z0-9_]+/', $touite["contenu"], $matches);
             $html .= "<p>" . htmlspecialchars($touite["pseudo"], ENT_QUOTES, "UTF-8")  . 
             " : " . "<a href='?action=detail&id=". $touite["id"] ."'>" .  htmlspecialchars($touite["contenu"], ENT_QUOTES, "UTF-8") . "</a><br>" .
             "publié le : " . htmlspecialchars($touite["date_publication"], ENT_QUOTES, "UTF-8") . "</p>";
+            foreach($matches[0] as $hashtag) { 
+                $tag = substr($hashtag, 1);
+                $html .=  '<a href="?action=tag&amp;tag=' . urlencode($tag) . '">' . 
+                htmlspecialchars($hashtag, ENT_QUOTES, "UTF-8") . '</a>';
+            }
         }
+        
         return $html;
     }
 }
