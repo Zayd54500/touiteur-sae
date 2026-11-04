@@ -2,6 +2,8 @@
 
 namespace Zayd54500\TouiteurSae\Repository;
 
+use Zayd54500\TouiteurSae\Database\DatabaseConnection;
+
 class TouiteRepository {
     private array $touitesInitiaux = [
         [
@@ -30,53 +32,70 @@ class TouiteRepository {
         ]
     ];
 
-    public function __construct()
-    {
-        if (!isset($_SESSION['touites'])) {
-            $_SESSION['touites'] = $this->touitesInitiaux;
-        }
-    }
     public function getAll(): array
     {
-        return $_SESSION['touites'];
+        $pdo = DatabaseConnection::getConnection();
+        $sql = "
+            SELECT t.id, t.contenu, t.date_publication, u.pseudo
+            FROM touite as t
+            INNER JOIN utilisateur AS u
+                ON t.utilisateur_id = u.id
+            ORDER BY t.date_publication DESC
+            ";
+        $requete = $pdo->query($sql);
+        return $requete->fetchAll();
     }
 
     public function enregistrer(string $contenu, int $utilisateurId): int
     {
-        $nouvelId = count($_SESSION['touites']) + 1;
+        $pdo = DatabaseConnection::getConnection();
+        $sql = "
+        INSERT INTO touite (contenu, utilisateur_id)
+        VALUES (:contenu, :utilisateur_id)
+        ";
 
-        $_SESSION['touites'][] = [
-            "id" => $nouvelId,
-            "pseudo" => "utilisateur_test",
-            "contenu" => $contenu,
-            "date_publication" => date("d/m/Y")
-        ];
+        $requete = $pdo->prepare($sql);
+        $requete->execute([
+            'contenu' => $contenu,
+            'utilisateur_id' => $utilisateurId
+        ]);
 
-        return $nouvelId;
+        return (int) $pdo->lastInsertId();
     }
 
     public function getById(int $id): ?array
     {
-        foreach ($_SESSION['touites'] as $touite) {
-            if ($touite["id"] === $id) {
-                return $touite;
-            }
-        }
+        $pdo = DatabaseConnection::getConnection();
+        $sql = "
+        SELECT t.id, t.contenu, t.date_publication, u.pseudo
+        FROM touite as t
+        INNER JOIN utilisateur AS u
+            ON t.utilisateur_id = u.id
+        WHERE t.id = :id
+        ";
 
-        return null;
+        $requete = $pdo->prepare($sql);
+        $requete->execute(['id' => $id]);
+        $touite = $requete->fetch();
+        return $touite ?: null;
     }
 
     public function getByAuteur(string $pseudo): array
     {
-        $resultats = [];
+        $pdo = DatabaseConnection::getConnection();
+        $sql = "
+        SELECT t.id, t.contenu, t.date_publication, u.pseudo
+        FROM touite as t
+        INNER JOIN utilisateur AS u
+            ON t.utilisateur_id = u.id
+        WHERE u.pseudo = :pseudo
+        ORDER BY t.date_publication DESC
+        ";
 
-        foreach ($_SESSION['touites'] as $touite) {
-            if ($touite["pseudo"] === $pseudo) {
-                $resultats[] = $touite;
-            }
-        }
+        $requete = $pdo->prepare($sql);
+        $requete->execute(['pseudo' => $pseudo]);
 
-        return $resultats;
+        return $requete->fetchAll();
     }
 
     public function getByTag(string $tag): array { 
