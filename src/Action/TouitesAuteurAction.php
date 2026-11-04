@@ -22,6 +22,19 @@ class TouitesAuteurAction {
             return "Aucun touite pour cet auteur";
         }
 
+        usort($touites, function ($a, $b) {
+            $dateA = \DateTime::createFromFormat("d/m/Y", $a["date_publication"]);
+            $dateB = \DateTime::createFromFormat("d/m/Y", $b["date_publication"]);
+
+            if ($dateA > $dateB) { 
+                return -1; 
+            } else if ($dateA < $dateB) { 
+                return 1;
+            } else { 
+                return 0;
+            }
+        });
+
         $html = "<h2>" . "Touites de " . htmlspecialchars($pseudo, ENT_QUOTES, "UTF-8") . "</h2>";
 
         foreach ($touites as $touite) { 
