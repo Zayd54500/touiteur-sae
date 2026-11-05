@@ -6,20 +6,26 @@ use Zayd54500\TouiteurSae\Repository\TouiteRepository;
 
 
 class ListeTouitesAction {
-    public function creerWall(Utilisateur $u, Database $db)
+    private Database $baseDeDonne;
+    private Utilisateur $utilisateur;
+    public function __construct($db, $u){
+        $this->baseDeDonne = $db;
+        $this->utilisateur = $u;
+    }
+    public function execute(): string
     {
-        $tab = $db->__get("listeTouite");
-        $touite = [];
+        $tab = $this->baseDeDonne->__get("listeTouite");
+        $wall = [];
         $compteur = 0;
         for ($i = 0; $i < 20; $i++) {
             $elem = $tab[$i];
-            if ($u->__get("listeComptesAbonnes")[$elem["pseudo"]]) {
+            if ($this->utilisateur->__get("listeComptesAbonnes")[$elem["pseudo"]]) {
                 $wall[] = $elem;
                 $compteur++;
             } else {
                 $tabHash = $elem["hashtag"];
                 foreach ($elem as $tag) {
-                    if ($u->__get('listeHashtagsSuivis')[$tag]) {
+                    if ($this->utilisateur->__get('listeHashtagsSuivis')[$tag]) {
                         $wall[] = $elem;
                         $compteur++;
                         break;
@@ -28,10 +34,10 @@ class ListeTouitesAction {
             }
         }
         for ($i = $compteur; $i < 20; $i++) {
-            $wall[] = $tab[i];
+            $wall[] = $tab[$i];
         }
-        $this->afficherTouite($wall);
-    }   
+        return $this->afficherTouite($wall);
+    }
     public function afficherTouite($listeTouites){
         usort($listeTouites, function ($a, $b) {
             $dateA = \DateTime::createFromFormat("d/m/Y", $a["date_publication"]);
