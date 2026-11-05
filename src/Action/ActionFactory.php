@@ -1,0 +1,22 @@
+<?php
+
+namespace Zayd54500\TouiteurSae\Action;
+
+use InvalidArgumentException;
+use Zayd54500\TouiteurSae\Repository\HashtagRepository;
+use Zayd54500\TouiteurSae\Repository\TouiteRepository;
+use Zayd54500\TouiteurSae\Service\HashtagExtractor;
+
+class ActionFactory
+{
+    public function create(string $nomAction): object
+    {
+        return match ($nomAction) {
+            'detail' => new DetailTouiteAction(),
+            'auteur' => new TouitesAuteurAction(),
+            'tag' => new TouitesTagAction(),
+            'publication' => new PublicationTouiteAction(new TouiteRepository(), new HashtagExtractor(), new HashtagRepository()),
+            default => new ListeTouitesAction(),
+        };
+    }
+}
