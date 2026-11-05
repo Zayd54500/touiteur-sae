@@ -10,25 +10,29 @@ class TouiteRepository {
             "id" => 3,
             "pseudo" => "Zayd",
             "contenu" => "Je suis le meilleur touitos de ce réseau #Prouveur",
-            "date_publication" => "01/11/2026"
+            "date_publication" => "01/11/2026",
+            "hastags" => "Prouveur"
         ],
         [
             "id" => 1,
             "pseudo" => "Vincent",
             "contenu" => "On test ce réseau de merde pour voir ^^ #Hater",
-            "date_publication" => "03/11/2026"
+            "date_publication" => "03/11/2026",
+            "hastags" => "Hater"
         ],
         [
             "id" => 2,
             "pseudo" => "Aminou",
             "contenu" => "Je pense que vincent est une merde #Hater",
-            "date_publication" => "02/11/2026"
+            "date_publication" => "02/11/2026",
+            "hastags" => "Hater"
         ],
         [
             "id" => 4,
             "pseudo" => "Vincent",
             "contenu" => "Mon deuxième touite sur ce réseaux d'enculé #Heureux",
-            "date_publication" => "03/11/2026"
+            "date_publication" => "03/11/2026",
+            "hastags" => "Heureux"
         ]
     ];
 

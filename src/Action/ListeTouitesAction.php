@@ -1,14 +1,39 @@
 <?php
 namespace Zayd54500\TouiteurSae\Action;
+use Zayd54500\TouiteurSae\Classes\Database;
+use Zayd54500\TouiteurSae\Classes\Utilisateur;
 use Zayd54500\TouiteurSae\Repository\TouiteRepository;
 
 
-class ListeTouitesAction { 
-    public function execute(): string { 
-        $repository = new TouiteRepository();
-        $touites = $repository->getAll();
-
-        usort($touites, function ($a, $b) {
+class ListeTouitesAction {
+    public function creerWall(Utilisateur $u, Database $db)
+    {
+        $tab = $db->__get("listeTouite");
+        $touite = [];
+        $compteur = 0;
+        for ($i = 0; $i < 20; $i++) {
+            $elem = $tab[$i];
+            if ($u->__get("listeComptesAbonnes")[$elem["pseudo"]]) {
+                $wall[] = $elem;
+                $compteur++;
+            } else {
+                $tabHash = $elem["hashtag"];
+                foreach ($elem as $tag) {
+                    if ($u->__get('listeHashtagsSuivis')[$tag]) {
+                        $wall[] = $elem;
+                        $compteur++;
+                        break;
+                    }
+                }
+            }
+        }
+        for ($i = $compteur; $i < 20; $i++) {
+            $wall[] = $tab[i];
+        }
+        $this->afficherTouite($wall);
+    }
+    public function afficherTouite($listeTouites){
+        usort($listeTouites, function ($a, $b) {
             $dateA = \DateTime::createFromFormat("d/m/Y", $a["date_publication"]);
             $dateB = \DateTime::createFromFormat("d/m/Y", $b["date_publication"]);
 
@@ -22,7 +47,7 @@ class ListeTouitesAction {
         });
         
         $html = "<h2>Fil d'actualité</h2>";
-        foreach ($touites as $touite) { 
+        foreach ($listeTouites as $touite) {
             preg_match_all('/#[a-zA-Z0-9_]+/', $touite["contenu"], $matches);
             $html .= "<p>" . htmlspecialchars($touite["pseudo"], ENT_QUOTES, "UTF-8")  . 
             " : " . "<a href='?action=detail&id=". $touite["id"] ."'>" .  htmlspecialchars($touite["contenu"], ENT_QUOTES, "UTF-8") . "</a><br>" .
@@ -37,5 +62,4 @@ class ListeTouitesAction {
         return $html;
     }
 }
-/** test de commit */
 ?>
