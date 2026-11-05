@@ -32,6 +32,7 @@ class ListeTouitesAction {
         }
         $this->afficherTouite($wall);
     }
+    /** Ligne pour regler problème de commit */
     public function afficherTouite($listeTouites){
         usort($listeTouites, function ($a, $b) {
             $dateA = \DateTime::createFromFormat("d/m/Y", $a["date_publication"]);
