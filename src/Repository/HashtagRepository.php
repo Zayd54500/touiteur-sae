@@ -3,18 +3,16 @@
 namespace Zayd54500\TouiteurSae\Repository;
 
 use InvalidArgumentException;
+use PDO;
+use Zayd54500\TouiteurSae\Database\DatabaseConnection;
 
 class HashtagRepository
 {
+    private PDO $pdo;
+
     public function __construct()
     {
-        if (!isset($_SESSION['hashtags'])) {
-            $_SESSION['hashtags'] = [];
-        }
-
-        if (!isset($_SESSION['touite_hashtags'])) {
-            $_SESSION['touite_hashtags'] = [];
-        }
+        $this->pdo = DatabaseConnection::getConnection();
     }
 
     public function enregistrer(string $nom): int
@@ -27,36 +25,48 @@ class HashtagRepository
             );
         }
 
-        foreach ($_SESSION['hashtags'] as $hashtag) {
-            if (strcasecmp($hashtag['nom'], $nom) === 0) {
-                return $hashtag['id'];
-            }
+        $requete = $this->pdo->prepare(
+            'SELECT id FROM hashtag WHERE nom = :nom'
+        );
+
+        $requete->execute([
+            'nom' => $nom
+        ]);
+
+        $hashtagId = $requete->fetchColumn();
+
+        if ($hashtagId !== false) {
+            return (int) $hashtagId;
         }
 
-        $nouvelId = count($_SESSION['hashtags']) + 1;
+        $requete = $this->pdo->prepare(
+            'INSERT INTO hashtag (nom) VALUES (:nom)'
+        );
 
-        $_SESSION['hashtags'][] = [
-            'id' => $nouvelId,
+        $requete->execute([
             'nom' => $nom
-        ];
+        ]);
 
-        return $nouvelId;
+        return (int) $this->pdo->lastInsertId();
     }
 
     public function associer(int $touiteId, int $hashtagId): void
     {
-        foreach ($_SESSION['touite_hashtags'] as $association) {
-            if (
-                $association['touite_id'] === $touiteId
-                && $association['hashtag_id'] === $hashtagId
-            ) {
-                return;
-            }
+        if ($touiteId <= 0 || $hashtagId <= 0) {
+            throw new InvalidArgumentException(
+                'Les identifiants du touite et du hashtag sont invalides.'
+            );
         }
 
-        $_SESSION['touite_hashtags'][] = [
+        $requete = $this->pdo->prepare(
+            'INSERT INTO touite_hashtag (touite_id, hashtag_id)
+             VALUES (:touite_id, :hashtag_id)
+             ON DUPLICATE KEY UPDATE touite_id = touite_id' //Si cette association existe déjà, ne provoque pas d’erreur et ne change rien.
+        );
+
+        $requete->execute([
             'touite_id' => $touiteId,
             'hashtag_id' => $hashtagId
-        ];
+        ]);
     }
 }
