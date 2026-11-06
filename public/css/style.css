@@ -1,0 +1,238 @@
+/* Style global */
+body {
+  background-color: #000;
+  color: #e7e9ea;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Navigation latérale */
+aside nav a {
+  padding: 12px 16px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  transition: background-color 0.2s;
+}
+
+aside nav a:hover {
+  background-color: #181818;
+}
+
+/* Colonne centrale */
+main section {
+  min-height: 100vh;
+}
+
+/* Séparations */
+.border-end {
+  border-color: #2f3336 !important;
+}
+
+/* Titres */
+h2,
+h4,
+h5 {
+  color: #e7e9ea;
+}
+
+/* Liens */
+a {
+  color: #1d9bf0;
+}
+
+a:hover {
+  color: #1a8cd8;
+}
+
+/* Barre latérale */
+@media (min-width: 768px) {
+  main aside:first-child {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    align-self: flex-start;
+  }
+}
+
+/* Cartes des publications */
+.touite-card {
+  padding: 20px 16px;
+  border-bottom: 1px solid #2f3336;
+  transition: background-color 0.2s;
+}
+
+.touite-card:hover {
+  background-color: #080808;
+}
+
+/* Avatar */
+.touite-avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: #1d9bf0;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Contenu du touite */
+.touite-content {
+  display: block;
+  color: #e7e9ea;
+  text-decoration: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.touite-content:hover {
+  color: #e7e9ea;
+}
+
+/* Alignement du contenu des publications */
+.touite-card .flex-grow-1 {
+  min-width: 0;
+  text-align: left;
+}
+
+.touite-content {
+  text-align: left;
+  margin: 0;
+}
+
+.touite-hashtag {
+  color: #1d9bf0;
+  text-decoration: none;
+}
+
+.touite-hashtag:hover {
+  color: #1d9bf0;
+  text-decoration: underline;
+}
+
+.touite-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.touite-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #71767b;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.touite-action:hover {
+  color: #1d9bf0;
+}
+
+/* Navigation inspirée de X */
+.touiteur-nav {
+  max-width: 230px;
+}
+
+.nav-link-touiteur {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: fit-content;
+  padding: 12px 16px;
+  border-radius: 30px;
+  color: #e7e9ea;
+  text-decoration: none;
+  font-size: 1.15rem;
+  transition: background-color 0.2s;
+}
+
+.nav-link-touiteur i {
+  font-size: 1.5rem;
+}
+
+.nav-link-touiteur:hover {
+  color: #e7e9ea;
+  background-color: #181818;
+}
+
+/* Bouton Publier */
+.btn-publier {
+  display: block;
+  padding: 13px 24px;
+  border-radius: 30px;
+  background-color: #1d9bf0;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.btn-publier:hover {
+  background-color: #1a8cd8;
+  color: #fff;
+}
+
+/* Formulaire de publication */
+.publication-container {
+  width: 100%;
+}
+
+.publication-form {
+  padding: 16px 0;
+}
+
+/* Zone de saisie */
+.publication-textarea {
+  display: block;
+  width: 100%;
+  min-height: 140px;
+  padding: 12px 0;
+  resize: vertical;
+
+  background: transparent;
+  border: none;
+  outline: none;
+
+  color: #e7e9ea;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.publication-textarea::placeholder {
+  color: #71767b;
+}
+
+/* Bas du formulaire */
+.publication-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  padding-top: 16px;
+  border-top: 1px solid #2f3336;
+}
+
+.publication-footer .btn-publier {
+  width: auto;
+  padding: 10px 24px;
+  flex-shrink: 0;
+}
+
+/* Adaptation mobile */
+@media (max-width: 576px) {
+  .publication-footer {
+    flex-wrap: wrap;
+  }
+
+  .publication-textarea {
+    font-size: 1rem;
+  }
+}

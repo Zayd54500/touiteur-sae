@@ -9,8 +9,12 @@ class Database {
     private $listeTouite;
     public function __construct(TouiteRepository  $repo){
         $this->listeTouite = $repo->getAll();
-        for ($i =0; $i<count($this->listeTouite); $i++){
-            $this->listeUtilisateur[$this->listeTouite[$i]] = new Utilisateur($this->listeTouite[$i]['pseudo']);
+        $this->listeUtilisateur = [];
+        foreach ($this->listeTouite as $touite) {
+            $pseudo = $touite["pseudo"];
+            if(!isset($this->listeUtilisateur[$pseudo])) {
+                $this->listeUtilisateur[$pseudo] = new Utilisateur($pseudo);
+            }
         }
     }
     public function __get($propriete) {
