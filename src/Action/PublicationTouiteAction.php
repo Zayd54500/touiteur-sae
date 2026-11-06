@@ -76,14 +76,39 @@ class PublicationTouiteAction
                 }
             }
         }
-
         return $message . '
-        <h2>Publier un touite</h2>
-        <form method="post" action="?action=publication">
-            <label for="contenu">Votre touite :</label><br>
-            <textarea id="contenu" name="contenu" maxlength="235" required></textarea><br>
-            <button type="submit">Publier</button>
-        </form>
-    ';
+        <div class="publication-container">
+            <h2 class="mb-4">Publier un touite</h2>
+
+            <form method="post" action="?action=publication" class="publication-form">
+                <div class="d-flex gap-3">
+                    <div class="touite-avatar">Z</div>
+
+                    <div class="flex-grow-1">
+                        <label for="contenu" class="visually-hidden">Votre touite</label>
+
+                        <textarea
+                            id="contenu"
+                            name="contenu"
+                            class="publication-textarea"
+                            placeholder="Quoi de neuf ?"
+                            maxlength="235"
+                            rows="4"
+                            required
+                        ></textarea>
+
+                        <div class="publication-footer">
+                            <span id="compteur-caracteres" class="text-secondary">
+                            0 / 235
+                            </span>
+                            <button type="submit" class="btn-publier border-0">
+                                Publier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        ';
     }
 }
