@@ -6,7 +6,7 @@ class Hashtag {
     private $nom;
     private $nbSuivi;
     public function __construct($n){
-        $this->nom = n;
+        $this->nom = $n;
         $this->nbSuivi = 0;
     }
     public function etreSuivi(){
