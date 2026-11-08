@@ -23,3 +23,12 @@ CREATE TABLE touite_hashtag (
                                 FOREIGN KEY (touite_id) REFERENCES touite(id) ON DELETE CASCADE,
                                 FOREIGN KEY (hashtag_id) REFERENCES hashtag(id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE suivi (
+                       suiveur_id INT NOT NULL,
+                       suivi_id INT NOT NULL,
+                       PRIMARY KEY (suiveur_id, suivi_id),
+                       FOREIGN KEY (suiveur_id) REFERENCES utilisateur(id) ON DELETE CASCADE,
+                       FOREIGN KEY (suivi_id) REFERENCES utilisateur(id) ON DELETE CASCADE
+);

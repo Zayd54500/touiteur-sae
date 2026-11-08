@@ -7,6 +7,7 @@ use Zayd54500\TouiteurSae\Classes\Database;
 use Zayd54500\TouiteurSae\Classes\Utilisateur;
 use Zayd54500\TouiteurSae\Repository\HashtagRepository;
 use Zayd54500\TouiteurSae\Repository\TouiteRepository;
+use Zayd54500\TouiteurSae\Repository\UtilisateurRepository;
 use Zayd54500\TouiteurSae\Service\HashtagExtractor;
 
 class ActionFactory
@@ -21,6 +22,7 @@ class ActionFactory
             'auteur' => new TouitesAuteurAction(),
             'tag' => new TouitesTagAction(),
             'publication' => new PublicationTouiteAction(new TouiteRepository(), new HashtagExtractor(), new HashtagRepository()),
+            'classement' => new ClassementUtilisateursAction(new UtilisateurRepository()),
             default => new ListeTouitesAction($db, $premierUtilisateur),
         };
     }
