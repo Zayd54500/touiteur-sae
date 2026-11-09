@@ -99,7 +99,7 @@ class ListeTouitesAction {
 
                         <div class='flex-grow-1'>
                             <div class='mb-2'>
-                                <span class='fw-bold'>{$pseudo}</span>
+                                <a href='?action=auteur&pseudo={$pseudo}' class='fw-bold text-decoration-none text-white'>{$pseudo}</a>
                                 <span class='text-secondary ms-2'>{$date}</span>
                             </div>
 

@@ -6,6 +6,20 @@ use Zayd54500\TouiteurSae\Dispatcher\Dispatcher;
 session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 
+$utilisateurRepository = new \Zayd54500\TouiteurSae\Repository\UtilisateurRepository();
+$utilisateurs = $utilisateurRepository->obtenirUtilisateurs();
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['utilisateur_id'])) { 
+    $id = filter_var($_POST["utilisateur_id"], FILTER_VALIDATE_INT);
+
+    foreach($utilisateurs as $utilisateur) { 
+        if ($id !== false && $id === (int) $utilisateur['id']) { 
+            $_SESSION['utilisateur_id'] = $id;
+            break;
+        }
+    }
+}
+
 
 $action = $_GET["action"] ?? "liste";
 
@@ -42,6 +56,29 @@ $dispatcher = new Dispatcher($factory);
             <!-- Navigation gauche -->
             <aside class="col-md-3 col-lg-3 border-end p-3">
                 <h2 class="fw-bold mb-4">Touiteur</h2>
+                <form method="POST" class="mb-4">
+                    <label for="utilisateur" class="form-label">
+                        Utilisateur courant
+                    </label>
+
+                    <select name="utilisateur_id" id="utilisateur"
+                            class="form-select">
+                        <?php foreach ($utilisateurs as $utilisateur): ?>
+                            <option
+                                value="<?= (int) $utilisateur['id'] ?>"
+                                <?= (int) ($_SESSION['utilisateur_id'] ?? 0) === (int) $utilisateur['id']
+                                    ? 'selected'
+                                    : '' ?>
+                            >
+                                <?= htmlspecialchars($utilisateur['pseudo'], ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary mt-2">
+                        Sélectionner
+                    </button>
+                </form>
                 <nav class="touiteur-nav d-flex flex-column gap-2">
                     <a href="?action=liste" class="nav-link-touiteur">
                         <i class="bi bi-house-door-fill"></i>

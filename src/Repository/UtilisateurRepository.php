@@ -27,4 +27,41 @@ class UtilisateurRepository
 
         return $requete->fetchAll();
     }
+
+    public function suivreUtilisateur(int $suiveurId, int $suiviId): bool { 
+        if ($suiveurId === $suiviId) { 
+            return false;
+        }
+
+        $requete = $this->pdo->prepare(
+            'SELECT count(*) FROM suivi WHERE suiveur_id = :suiveur_id AND suivi_id = :suivi_id'
+        );
+
+        $requete->execute([
+            "suiveur_id" => $suiveurId,
+            "suivi_id" => $suiviId
+        ]);
+
+        $nombre = (int) $requete->fetchColumn();
+
+        if ($nombre > 0) { 
+            return false;
+        }
+
+        $requete = $this->pdo->prepare(
+            'INSERT INTO suivi (suiveur_id, suivi_id) VALUES (:suiveur_id, :suivi_id)'
+        );
+        return $requete->execute([
+            "suiveur_id" => $suiveurId,
+            "suivi_id" => $suiviId
+        ]);
+    }
+
+    public function obtenirUtilisateurs(): array { 
+        $requete = $this->pdo->query(
+            'SELECT id, pseudo FROM utilisateur ORDER BY pseudo ASC'
+        ); 
+
+        return $requete->fetchAll();
+    }
 }
