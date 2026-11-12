@@ -35,7 +35,7 @@ class TouitesAuteurAction
 
         $repository = new TouiteRepository();
         $touites = $repository->getByAuteur($pseudo);
-        
+
 
         usort($touites, function ($a, $b) {
             return strcmp(
@@ -55,8 +55,14 @@ class TouitesAuteurAction
             if ($dejaSuivi === true) {
                 $html .= "<span class='badge bg-secondary'>Déjà suivi</span>";
             } else {
+                $csrfToken = htmlspecialchars(
+                    $_SESSION["csrf_token"],
+                    ENT_QUOTES,
+                    'UTF-8'
+                );
                 $html .= "
                 <form method='POST' action='?action=suivre'>
+                    <input type='hidden' name='csrf_token' value='{$csrfToken}'>
                     <input type='hidden' name='suivi_id' value='{$auteurId}'>
                     <button type='submit' class='btn btn-primary'>
                         Suivre

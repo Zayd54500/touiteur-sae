@@ -120,14 +120,27 @@ class TouiteRepository {
             SELECT t.id, t.contenu, t.date_publication, u.pseudo
             FROM touite as t
             INNER JOIN utilisateur AS u ON t.utilisateur_id = u.id
-            INNER JOIN suivi AS s ON s.suivi_id = u.id
-            WHERE s.suiveur_id = :utilisateur_id
-            ORDER BY t.date_publication DESC, t.id DESC
-            LIMIT 20
+            WHERE
+                EXISTS (
+                    SELECT 1 
+                    FROM suivi AS s
+                    WHERE s.suiveur_id = :utilisateur_id
+                        AND s.suivi_id = u.id
+                )
+                OR EXISTS ( 
+                    SELECT 1 
+                    FROM touite_hashtag AS th
+                    INNER JOIN utilisateur_hashtag AS uh ON uh.hashtag_id = th.hashtag_id
+                    WHERE th.touite_id = t.id
+                        AND uh.utilisateur_id = :utilisateur_hashtag_id
+                )
+                ORDER BY t.date_publication DESC, t.id DESC
+                LIMIT 20
             ";
         $requete = $pdo->prepare($sql);
         $requete->execute([
-            "utilisateur_id" => $utilisateurId
+            "utilisateur_id" => $utilisateurId,
+            "utilisateur_hashtag_id" => $utilisateurId
         ]);
 
         return $requete->fetchAll();

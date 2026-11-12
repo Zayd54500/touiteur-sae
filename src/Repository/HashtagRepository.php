@@ -69,4 +69,22 @@ class HashtagRepository
             'hashtag_id' => $hashtagId
         ]);
     }
+
+    public function abonnerUtilisateur(int $utilisateurId, int $hashtagId): bool
+    {
+        if ($utilisateurId <= 0 || $hashtagId <= 0) {
+            return false;
+        }
+
+        $requete = $this->pdo->prepare(
+            'INSERT INTO utilisateur_hashtag (utilisateur_id, hashtag_id)
+            VALUES (:utilisateur_id, :hashtag_id)
+            ON DUPLICATE KEY UPDATE hashtag_id = hashtag_id'
+        );
+
+        return $requete->execute([
+            'utilisateur_id' => $utilisateurId,
+            "hashtag_id" => $hashtagId
+        ]);
+    }
 }

@@ -22,7 +22,7 @@ class UtilisateurRepository
              LEFT JOIN suivi AS s
                 ON s.suivi_id = u.id
              GROUP BY u.id, u.pseudo
-             ORDER BY nombre_abonnes DESC, u.pseudo ASC'
+             ORDER BY nombre_abonnes ASC, u.pseudo ASC'
         );
 
         return $requete->fetchAll();

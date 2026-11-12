@@ -18,10 +18,6 @@ class ListeTouitesAction
             }
 
             $wall = $repository->getMurUtilisateur($utilisateurId);
-
-            if (empty($wall)) {
-                return "<h2>Mon Mur</h2><p>Aucune publication des utilisateurs suivis</p>";
-            }
         } else {
             $wall = $repository->getAll();
         }
@@ -40,6 +36,45 @@ class ListeTouitesAction
         $action = $_GET["action"] ?? "liste";
         $titre = ($action === "mur") ? "Mon mur" : "Fil d'actualité";
         $html = "<h2>{$titre}</h2>";
+
+        if ($action === "mur") {
+            $csrfToken = htmlspecialchars(
+                $_SESSION["csrf_token"],
+                ENT_QUOTES,
+                'UTF-8'
+            );
+            $html .= "
+        <form method='POST' action='?action=abonner-tag' class='mb-4'>
+            <input type='hidden' name='csrf_token' value='{$csrfToken}'>
+            <label for='tag' class='form-label'>
+                S'abonner à un hashtag
+            </label>
+
+            <div class='d-flex gap-2'>
+                <input
+                    type='text'
+                    id='tag'
+                    name='tag'
+                    class='form-control'
+                    placeholder='Exemple : Linux'
+                    maxlength='100'
+                    required
+                >
+
+                <button type='submit' class='btn btn-primary'>
+                    S'abonner
+                </button>
+            </div>
+        </form>
+    ";
+
+            if ($action === "mur" && empty($listeTouites)) {
+                $html .= "<p class='text-secondary'>
+                            Aucune publication pour le moment.
+                            Abonne-toi à un utilisateur ou à un hashtag.
+                        </p>";
+            }
+        }
         foreach ($listeTouites as $touite) {
             $id = (int) $touite['id'];
             $pseudo = htmlspecialchars(

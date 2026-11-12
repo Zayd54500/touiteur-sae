@@ -4,6 +4,18 @@ use Zayd54500\TouiteurSae\Action\ActionFactory;
 use Zayd54500\TouiteurSae\Dispatcher\Dispatcher;
 
 session_start();
+if (!isset($_SESSION["csrf_token"])) { 
+    $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") { 
+    $token = $_POST["csrf_token"] ?? null;
+    if (!is_string($token) || !hash_equals($_SESSION["csrf_token"], $token)) { 
+        http_response_code(403);
+        exit("Erreur 403 : Jeton CSRF invalide");
+    }
+}
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $utilisateurRepository = new \Zayd54500\TouiteurSae\Repository\UtilisateurRepository();
@@ -57,6 +69,11 @@ $dispatcher = new Dispatcher($factory);
             <aside class="col-md-3 col-lg-3 border-end p-3">
                 <h2 class="fw-bold mb-4">Touiteur</h2>
                 <form method="POST" class="mb-4">
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?= htmlspecialchars($_SESSION["csrf_token"], ENT_QUOTES, "UTF-8") ?>"
+                    >
                     <label for="utilisateur" class="form-label">
                         Utilisateur courant
                     </label>

@@ -32,3 +32,18 @@ CREATE TABLE suivi (
                        FOREIGN KEY (suiveur_id) REFERENCES utilisateur(id) ON DELETE CASCADE,
                        FOREIGN KEY (suivi_id) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS utilisateur_hashtag (
+    utilisateur_id INT NOT NULL,
+    hashtag_id INT NOT NULL,
+
+    PRIMARY KEY (utilisateur_id, hashtag_id),
+
+    FOREIGN KEY (utilisateur_id)
+        REFERENCES utilisateur(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (hashtag_id)
+        REFERENCES hashtag(id)
+        ON DELETE CASCADE
+);

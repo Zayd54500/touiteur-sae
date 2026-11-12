@@ -18,6 +18,7 @@ class ActionFactory
             'publication' => new PublicationTouiteAction(new TouiteRepository(), new HashtagExtractor(), new HashtagRepository()),
             'classement' => new ClassementUtilisateursAction(new UtilisateurRepository()),
             'suivre' => new SuivreUtilisateurAction(new UtilisateurRepository()),
+            'abonner-tag' => new AbonnerHashtagAction(new HashtagRepository()),
             default => new ListeTouitesAction(),
         };
     }

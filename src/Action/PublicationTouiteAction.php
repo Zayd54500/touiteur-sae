@@ -13,9 +13,10 @@ class PublicationTouiteAction
     private HashtagExtractor $hashtagExtractor;
     private HashtagRepository $hashtagRepository;
 
-    public function __construct(TouiteRepository $touiteRepository,
-                                HashtagExtractor $hashtagExtractor,
-                                HashtagRepository $hashtagRepository
+    public function __construct(
+        TouiteRepository $touiteRepository,
+        HashtagExtractor $hashtagExtractor,
+        HashtagRepository $hashtagRepository
     ) {
         $this->touiteRepository = $touiteRepository;
         $this->hashtagExtractor = $hashtagExtractor;
@@ -69,18 +70,33 @@ class PublicationTouiteAction
                 $message = 'Le contenu envoyé est invalide.';
             } else {
                 try {
-                    $id = $this->publier($contenu, 1);
+                    $utilisateurId = filter_var(
+                        $_SESSION["utilisateur_id"] ?? null,
+                        FILTER_VALIDATE_INT
+                    );
+
+                    if ($utilisateurId === false || $utilisateurId === null || $utilisateurId <= 0) {
+                        throw new InvalidArgumentException("Selectionne un utilisateur avant de publier");
+                    }
+
+                    $id = $this->publier($contenu, $utilisateurId);
                     $message = 'Touite publié avec succès. Identifiant : ' . $id;
                 } catch (InvalidArgumentException $exception) {
                     $message = $exception->getMessage();
                 }
             }
         }
+        $csrfToken = htmlspecialchars(
+            $_SESSION["csrf_token"],
+            ENT_QUOTES,
+            'UTF-8'
+        );
         return $message . '
         <div class="publication-container">
             <h2 class="mb-4">Publier un touite</h2>
 
             <form method="post" action="?action=publication" class="publication-form">
+                <input type="hidden" name="csrf_token" value="' . $csrfToken . '">
                 <div class="d-flex gap-3">
                     <div class="touite-avatar">Z</div>
 
