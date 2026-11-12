@@ -113,4 +113,23 @@ class TouiteRepository {
         }
         return $resultats;
     }
+
+    public function getMurUtilisateur(int $utilisateurId): array { 
+        $pdo = DatabaseConnection::getConnection();
+        $sql = "
+            SELECT t.id, t.contenu, t.date_publication, u.pseudo
+            FROM touite as t
+            INNER JOIN utilisateur AS u ON t.utilisateur_id = u.id
+            INNER JOIN suivi AS s ON s.suivi_id = u.id
+            WHERE s.suiveur_id = :utilisateur_id
+            ORDER BY t.date_publication DESC, t.id DESC
+            LIMIT 20
+            ";
+        $requete = $pdo->prepare($sql);
+        $requete->execute([
+            "utilisateur_id" => $utilisateurId
+        ]);
+
+        return $requete->fetchAll();
+    }
 }

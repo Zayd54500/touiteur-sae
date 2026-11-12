@@ -1,47 +1,79 @@
 <?php
-namespace Zayd54500\TouiteurSae\Action;
-use Zayd54500\TouiteurSae\Repository\TouiteRepository;
 
-class TouitesAuteurAction { 
-    public function execute(): string { 
+namespace Zayd54500\TouiteurSae\Action;
+
+use Zayd54500\TouiteurSae\Repository\TouiteRepository;
+use Zayd54500\TouiteurSae\Repository\UtilisateurRepository;
+
+class TouitesAuteurAction
+{
+    public function execute(): string
+    {
         $pseudo = $_GET["pseudo"] ?? "";
 
-        if (!is_string($pseudo)) { 
+        if (!is_string($pseudo)) {
             return "Pseudo invalide";
-        } else { 
+        } else {
             $pseudo = trim($pseudo);
         }
 
-        if ($pseudo === "") { 
+        if ($pseudo === "") {
             return "Pseudo invalide";
         }
 
-        $repository = new TouiteRepository();
-        $touites = $repository->getByAuteur($pseudo);
-        if (empty($touites)) { 
-            return "Aucun touite pour cet auteur";
+        $utilisateurRepository = new UtilisateurRepository();
+        $auteur = $utilisateurRepository->obtenirUtilisateurParPseudo($pseudo);
+
+        if ($auteur === false) {
+            return "Utilisateur introuvable";
         }
 
-        usort($touites, function ($a, $b) {
-            $dateA = \DateTime::createFromFormat("d/m/Y", $a["date_publication"]);
-            $dateB = \DateTime::createFromFormat("d/m/Y", $b["date_publication"]);
+        $auteurId = (int) $auteur["id"];
+        $utilisateurCourantId = (int) ($_SESSION["utilisateur_id"] ?? 0);
 
-            if ($dateA > $dateB) { 
-                return -1; 
-            } else if ($dateA < $dateB) { 
-                return 1;
-            } else { 
-                return 0;
-            }
+
+
+        $repository = new TouiteRepository();
+        $touites = $repository->getByAuteur($pseudo);
+        
+
+        usort($touites, function ($a, $b) {
+            return strcmp(
+                $b["date_publication"],
+                $a["date_publication"]
+            );
         });
 
         $html = "<h2>" . "Touites de " . htmlspecialchars($pseudo, ENT_QUOTES, "UTF-8") . "</h2>";
 
-        foreach ($touites as $touite) { 
+        if ($utilisateurCourantId > 0 && $utilisateurCourantId !== $auteurId) {
+            $dejaSuivi = $utilisateurRepository->estDejaSuivi(
+                $utilisateurCourantId,
+                $auteurId
+            );
+
+            if ($dejaSuivi === true) {
+                $html .= "<span class='badge bg-secondary'>Déjà suivi</span>";
+            } else {
+                $html .= "
+                <form method='POST' action='?action=suivre'>
+                    <input type='hidden' name='suivi_id' value='{$auteurId}'>
+                    <button type='submit' class='btn btn-primary'>
+                        Suivre
+                    </button>
+                </form>
+            ";
+            }
+        }
+
+        if (empty($touites)) {
+            $html .= "<p class='text-secondary'>Cet utilisateur n'a encore publié aucun touite</p>";
+        }
+
+        foreach ($touites as $touite) {
             $html .= "<p>" . htmlspecialchars($touite["contenu"], ENT_QUOTES, "UTF-8") . "</p>" .
-            "<small>" . htmlspecialchars($touite["date_publication"]) . "</small>";
+                "<small>" . htmlspecialchars($touite["date_publication"]) . "</small>";
         }
         return $html;
     }
 }
-?>

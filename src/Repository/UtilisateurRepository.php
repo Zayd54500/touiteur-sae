@@ -64,4 +64,33 @@ class UtilisateurRepository
 
         return $requete->fetchAll();
     }
+
+    public function obtenirUtilisateurParPseudo(string $pseudo): array|false { 
+        $requete = $this->pdo->prepare(
+            'SELECT id, pseudo FROM utilisateur WHERE pseudo = :pseudo'
+        );
+
+        $requete->execute([
+            "pseudo" => $pseudo
+        ]);
+
+        return $requete->fetch();
+    }
+
+    public function estDejaSuivi(int $suiveurId, int $suiviId): bool {
+        if ($suiveurId === $suiviId) { 
+            return false;
+        }
+ 
+        $requete = $this->pdo->prepare(
+            'SELECT count(*) FROM suivi WHERE suiveur_id = :suiveur_id AND suivi_id = :suivi_id'
+        );
+
+        $requete->execute([
+            "suiveur_id" => $suiveurId,
+            "suivi_id" => $suiviId
+        ]);
+
+        return (int) $requete->fetchColumn() > 0;
+    }
 }

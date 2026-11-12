@@ -1,50 +1,35 @@
 <?php
+
 namespace Zayd54500\TouiteurSae\Action;
-use Zayd54500\TouiteurSae\Classes\Database;
-use Zayd54500\TouiteurSae\Classes\Utilisateur;
+
 use Zayd54500\TouiteurSae\Repository\TouiteRepository;
 
-class ListeTouitesAction {
-    private Database $baseDeDonne;
-    private Utilisateur $utilisateur;
-    public function __construct($db, $u){
-        $this->baseDeDonne = $db;
-        $this->utilisateur = $u;
-    }
-
+class ListeTouitesAction
+{
     public function execute(): string
     {
-        $tab = $this->baseDeDonne->__get("listeTouite");
-        $wall = [];
-        $compteur = 0;
-        for ($i = 0; $i < min(20, count($tab)); $i++) {
-            $elem = $tab[$i];
-            if (isset($this->utilisateur->__get("listeComptesAbonnes")[$elem["pseudo"]])) {
-                $wall[] = $elem;
-                $compteur++;
-            } else {
-                preg_match_all('/#[a-zA-Z0-9_]+/', $elem["contenu"], $matches);
-                foreach ($matches[0] as $tag) {
-                    if (isset($this->utilisateur->__get('listeHashtagsSuivis')[$tag])) {
-                        $wall[] = $elem;
-                        $compteur++;
-                        break;
-                    }
-                }
-            }
-        }
-        foreach ($tab as $touite) {
-            if (count($wall) >= 20) {
-                break;
+        $utilisateurId = (int) ($_SESSION["utilisateur_id"] ?? 0);
+        $repository = new TouiteRepository();
+        $action = $_GET["action"] ?? "liste";
+
+        if ($action === "mur") {
+            if ($utilisateurId <= 0) {
+                return "Selectionne un utilisateur pour afficher son mur";
             }
 
-            if (!in_array($touite, $wall, true)) {
-                    $wall[] = $touite;
+            $wall = $repository->getMurUtilisateur($utilisateurId);
+
+            if (empty($wall)) {
+                return "<h2>Mon Mur</h2><p>Aucune publication des utilisateurs suivis</p>";
             }
+        } else {
+            $wall = $repository->getAll();
         }
+
         return $this->afficherTouite($wall);
     }
-    public function afficherTouite($listeTouites){
+    public function afficherTouite($listeTouites)
+    {
         usort($listeTouites, function ($a, $b) {
             return strcmp(
                 $b["date_publication"],
@@ -52,8 +37,10 @@ class ListeTouitesAction {
             );
         });
 
-        $html = "<h2>Fil d'actualité</h2>";
-        foreach($listeTouites as $touite) {
+        $action = $_GET["action"] ?? "liste";
+        $titre = ($action === "mur") ? "Mon mur" : "Fil d'actualité";
+        $html = "<h2>{$titre}</h2>";
+        foreach ($listeTouites as $touite) {
             $id = (int) $touite['id'];
             $pseudo = htmlspecialchars(
                 $touite["pseudo"],
@@ -67,16 +54,16 @@ class ListeTouitesAction {
             );
 
             $contenu = preg_replace_callback(
-                '/#[a-zA-Z0-9_]+/',
+                '/(?<!&)#[a-zA-Z0-9_]+/',
                 function ($matches) {
                     $hashtag = $matches[0];
-                    $tag = substr($hashtag,1);
+                    $tag = substr($hashtag, 1);
 
-                   return '<a class="touite-hashtag" href="?action=tag&amp;tag='
-                    . urlencode($tag)
-                    . '">'
-                    . $hashtag
-                    . '</a>';
+                    return '<a class="touite-hashtag" href="?action=tag&amp;tag='
+                        . urlencode($tag)
+                        . '">'
+                        . $hashtag
+                        . '</a>';
                 },
                 $contenu
             );
@@ -121,5 +108,3 @@ class ListeTouitesAction {
         return $html;
     }
 }
-
-?>

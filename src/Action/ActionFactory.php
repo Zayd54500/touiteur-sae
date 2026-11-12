@@ -2,9 +2,6 @@
 
 namespace Zayd54500\TouiteurSae\Action;
 
-use InvalidArgumentException;
-use Zayd54500\TouiteurSae\Classes\Database;
-use Zayd54500\TouiteurSae\Classes\Utilisateur;
 use Zayd54500\TouiteurSae\Repository\HashtagRepository;
 use Zayd54500\TouiteurSae\Repository\TouiteRepository;
 use Zayd54500\TouiteurSae\Repository\UtilisateurRepository;
@@ -14,9 +11,6 @@ class ActionFactory
 {
     public function create(string $nomAction): object
     {
-        $db = new Database(new TouiteRepository());
-        $utilisateurs = $db->__get('listeUtilisateur');
-        $premierUtilisateur = reset($utilisateurs) ?: new Utilisateur("visiteur");
         return match ($nomAction) {
             'detail' => new DetailTouiteAction(),
             'auteur' => new TouitesAuteurAction(),
@@ -24,7 +18,7 @@ class ActionFactory
             'publication' => new PublicationTouiteAction(new TouiteRepository(), new HashtagExtractor(), new HashtagRepository()),
             'classement' => new ClassementUtilisateursAction(new UtilisateurRepository()),
             'suivre' => new SuivreUtilisateurAction(new UtilisateurRepository()),
-            default => new ListeTouitesAction($db, $premierUtilisateur),
+            default => new ListeTouitesAction(),
         };
     }
 }

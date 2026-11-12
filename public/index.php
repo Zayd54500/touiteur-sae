@@ -9,11 +9,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $utilisateurRepository = new \Zayd54500\TouiteurSae\Repository\UtilisateurRepository();
 $utilisateurs = $utilisateurRepository->obtenirUtilisateurs();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['utilisateur_id'])) { 
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['utilisateur_id'])) {
     $id = filter_var($_POST["utilisateur_id"], FILTER_VALIDATE_INT);
 
-    foreach($utilisateurs as $utilisateur) { 
-        if ($id !== false && $id === (int) $utilisateur['id']) { 
+    foreach ($utilisateurs as $utilisateur) {
+        if ($id !== false && $id === (int) $utilisateur['id']) {
             $_SESSION['utilisateur_id'] = $id;
             break;
         }
@@ -30,6 +30,7 @@ $dispatcher = new Dispatcher($factory);
 ?>
 <!DOCTYPE html>
 <html lang="fr" data-bs-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,10 +41,9 @@ $dispatcher = new Dispatcher($factory);
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-        crossorigin="anonymous"
-    >
+        crossorigin="anonymous">
     <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
     <!-- Notre CSS personnalisé -->
     <link rel="stylesheet" href="/css/style.css">
@@ -62,14 +62,13 @@ $dispatcher = new Dispatcher($factory);
                     </label>
 
                     <select name="utilisateur_id" id="utilisateur"
-                            class="form-select">
+                        class="form-select">
                         <?php foreach ($utilisateurs as $utilisateur): ?>
                             <option
                                 value="<?= (int) $utilisateur['id'] ?>"
                                 <?= (int) ($_SESSION['utilisateur_id'] ?? 0) === (int) $utilisateur['id']
                                     ? 'selected'
-                                    : '' ?>
-                            >
+                                    : '' ?>>
                                 <?= htmlspecialchars($utilisateur['pseudo'], ENT_QUOTES, 'UTF-8') ?>
                             </option>
                         <?php endforeach; ?>
@@ -83,6 +82,11 @@ $dispatcher = new Dispatcher($factory);
                     <a href="?action=liste" class="nav-link-touiteur">
                         <i class="bi bi-house-door-fill"></i>
                         <span>Accueil</span>
+                    </a>
+
+                    <a href="?action=mur" class="nav-link-touiteur">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Mon mur</span>
                     </a>
 
                     <a href="?action=tag&tag=PHP" class="nav-link-touiteur">
@@ -101,7 +105,7 @@ $dispatcher = new Dispatcher($factory);
                 <h4 class="mb-4">Accueil</h4>
 
                 <?php
-                    echo $dispatcher->run($action);
+                echo $dispatcher->run($action);
                 ?>
             </section>
 
@@ -119,8 +123,8 @@ $dispatcher = new Dispatcher($factory);
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"
-    ></script>
+        crossorigin="anonymous"></script>
     <script src="/js/publication.js" defer></script>
 </body>
+
 </html>
